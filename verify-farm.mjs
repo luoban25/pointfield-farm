@@ -1,0 +1,48 @@
+import {chromium} from '@playwright/test';
+import {createCloud,PARTICLE_COUNT} from './src/scenes.js';
+import {farmHeight} from './src/farm.js';
+import {pathToFileURL} from 'node:url';
+import fs from 'node:fs/promises';
+
+const checks=[],errors=[];
+const assert=(value,name)=>{if(!value)throw Error(name);checks.push(name);};
+const model=createCloud(0);
+assert(model.position.length===PARTICLE_COUNT*3,'farm has 180,000 particles');
+assert(model.position.every(Number.isFinite)&&model.normal.every(Number.isFinite),'geometry and normals are finite');
+assert(Math.abs(farmHeight(0,0))<.000001,'center scan line meets terrain at zero');
+assert(farmHeight(4,-5)-farmHeight(4,3)>1,'terrain has substantial relief');
+assert(Math.abs(farmHeight(3,-3.5-.0001)-farmHeight(3,-3.5+.0001))>.17,'terrace height field has real steps');
+const materialCounts={green:model.accent.filter(v=>v< -1).length,copper:model.accent.filter(v=>v>0).length,blue:model.accent.filter(v=>v<0&&v>=-1).length};
+assert(materialCounts.green>10000&&materialCounts.copper>1000&&materialCounts.blue>1000,'crops, buildings and brook have independent materials');
+const browser=await chromium.launch({headless:true,executablePath:'C:/Users/Administrator/AppData/Local/ms-playwright/chromium-1208/chrome-win64/chrome.exe',args:['--enable-webgl','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+try {
+  const page=await browser.newPage({viewport:{width:1440,height:928}});
+  page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+  await page.goto('http://127.0.0.1:4318/');
+  await page.waitForFunction(()=>window.__radar?.renderedFrames>2);
+  assert(await page.evaluate(()=>window.__radar.pointCounts.length)===10,'standalone page contains all ten models');
+  assert(await page.locator('title').innerText()==='点域 · 空间模型','combined homepage has an independent page title');
+  await page.evaluate(()=>{window.__radar.config.rotate=false;window.__radar.config.speed=0;});await page.waitForTimeout(600);
+  await page.screenshot({path:'verification/farm-overview.png'});
+  await page.mouse.move(940,405);await page.mouse.down();await page.mouse.move(665,300,{steps:15});await page.mouse.up();await page.waitForTimeout(600);
+  await page.screenshot({path:'verification/farm-terrain.png'});
+  await page.locator('#pause').click();await page.waitForTimeout(1100);
+  const frames=await page.evaluate(()=>window.__radar.renderedFrames);await page.waitForTimeout(350);
+  assert(await page.evaluate(()=>window.__radar.renderedFrames)===frames,'pause stops drawing after damping');
+  await page.locator('#settings-toggle').click();assert(await page.locator('#settings').evaluate(e=>e.open),'parameter dialog opens');
+  await page.locator('#palette').selectOption('mint');await page.locator('#size').fill('1.3');
+  assert(await page.evaluate(()=>window.__radar.config.palette==='mint'&&window.__radar.config.size===1.3),'palette and particle controls work');
+  await page.keyboard.press('Escape');assert(await page.locator('#settings-toggle').evaluate(e=>e===document.activeElement),'Escape restores parameter button focus');
+  await page.setViewportSize({width:390,height:844});await page.waitForTimeout(350);await page.screenshot({path:'verification/farm-mobile.png'});
+  assert(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),'mobile has no horizontal overflow');
+  await page.keyboard.press('h');assert(await page.locator('.bottom-ui').isHidden(),'pure view hides controls');
+  const offline=await browser.newPage({viewport:{width:1440,height:928},reducedMotion:'reduce'}),requests=[];
+  offline.on('pageerror',e=>errors.push(e.message));offline.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url());});
+  await offline.goto(pathToFileURL(`${process.cwd()}/丘陵农场-双击打开.html`).href);await offline.waitForFunction(()=>window.__radar?.renderedFrames>0);
+  assert(await offline.evaluate(()=>window.__radar.paused&&!window.__radar.config.rotate),'offline respects reduced motion');
+  await offline.waitForTimeout(500);assert(requests.length===0,'offline HTML makes no external requests');
+  await offline.screenshot({path:'verification/farm-offline.png'});
+  assert(errors.length===0,'no browser or shader errors');
+  await fs.writeFile('verification/farm-results.json',JSON.stringify({checks,errors,materialCounts,sourceCount:model.sourceCount},null,2));
+  console.log(JSON.stringify({checks:checks.length,errors,materialCounts}));
+} finally {await browser.close();}

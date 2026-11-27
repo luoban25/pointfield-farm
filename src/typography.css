@@ -1,0 +1,100 @@
+@font-face {
+  font-family: "Pointfield UI";
+  src: url("./assets/pointfield-ui.woff2") format("woff2");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Local subset and a small type scale, shared by the ten scene views. */
+:root { --font-ui: "Pointfield UI", "Noto Sans SC", "Microsoft YaHei", sans-serif; font-family: var(--font-ui); }
+.brand { font-size: 19px; font-weight: 600; letter-spacing: .025em; }
+.header-note { font-size: 12px; letter-spacing: .025em; }
+.copy-heading { margin-bottom: 24px; }
+.copy-heading .eyebrow { font-size: 12px; line-height: 1.65; letter-spacing: .025em; }
+.hero-copy h1 { font-size: clamp(60px, 4.8vw, 82px); font-weight: 600; line-height: 1.2; letter-spacing: -.025em; margin-bottom: 26px; }
+.hero-copy h1 .title-lead { font-size: .68em; font-weight: 400; letter-spacing: -.02em; }
+.hero-copy h1 .title-line { margin-top: 0; }
+.hero-description { font-size: 14px; line-height: 1.85; letter-spacing: .01em; margin-bottom: 30px; }
+.scene-metrics { padding: 22px 0 28px; }
+.scene-metrics span { font-size: 11px; line-height: 1.5; margin-bottom: 10px; letter-spacing: .02em; }
+.scene-metrics strong { font-family: var(--font-ui); font-size: 24px; font-weight: 500; line-height: 1.4; font-variant-numeric: tabular-nums; letter-spacing: -.015em; }
+.structural-metrics strong { font-size: 17px; letter-spacing: 0; }
+.primary-link { font-size: 14px; font-weight: 500; letter-spacing: .01em; }
+.scan-monitor, .asset-reading span, .asset-reading strong, .climate-reading small,
+.water-array:after, .component-item>i, .component-item strong, .model-buttons button small, output {
+  font-family: var(--font-ui); font-variant-numeric: tabular-nums;
+}
+.scan-monitor { font-size: 12px; line-height: 1.6; }
+.scan-monitor strong { font-weight: 500; }
+.water-array:before { font-size: 12px; letter-spacing: .025em; }
+.water-array:after { font-size: 11px; letter-spacing: .025em; }
+.water-reading>span { font-size: 10px; font-weight: 500; letter-spacing: .02em; }
+.water-reading strong { font-size: 13px; font-weight: 500; top: 37px; }
+.component-header>span { font-size: 12px; }
+.component-header>small { font-size: 11px; }
+.component-diagram { margin: 20px 0 26px; }
+.component-item { gap: 10px; margin-bottom: 26px; }
+.component-item>i { font-size: 10px; padding-top: 5px; }
+.component-item strong { font-size: 14px; font-weight: 500; line-height: 1.5; letter-spacing: .01em; }
+.component-item small { font-size: 11px; line-height: 1.8; margin-top: 6px; }
+.climate-reading>span { font-size: 12px; letter-spacing: .02em; }
+.climate-reading>strong { font-size: 12px; font-weight: 500; line-height: 1.6; }
+.climate-reading small { font-size: 11px; line-height: 1.8; letter-spacing: 0; }
+.climate-reading small span, .climate-reading small b { font-size: 12px; }
+#hint { font-size: 11px; letter-spacing: .025em; line-height: 1.6; }
+.view-buttons button, #rescan { font-size: 13px; }
+.model-buttons button { gap: 7px; }
+.model-buttons button small { font-size: 11px; line-height: 1.4; letter-spacing: .04em; }
+.model-buttons button>span { font-size: 14px; font-weight: 500; line-height: 1.5; }
+.settings-head h2 { font-size: 16px; letter-spacing: .02em; }
+.range-label, .select-label, .check-label, .reset-button, select { font-size: 13px; }
+output { font-size: 12px; }
+
+@media (max-height:760px) and (min-width:761px) {
+  .copy-heading { margin-bottom: 16px; }
+  .hero-copy h1 { font-size: clamp(50px, 4.5vw, 68px); margin-bottom: 22px; }
+  .hero-description { font-size: 13px; line-height: 1.85; margin-bottom: 22px; }
+  .scene-metrics { padding: 18px 0 24px; }
+  .scene-metrics strong { font-size: 21px; }
+  .structural-metrics strong { font-size: 16px; }
+  .component-diagram { margin: 16px 0 20px; }
+  .component-item { margin-bottom: 18px; }
+  .component-item strong { font-size: 13px; }
+  .component-item small { font-size: 11px; line-height: 1.7; }
+  .climate-reading small { font-size: 11px; }
+  .climate-reading small span, .climate-reading small b { font-size: 11px; }
+}
+@media (max-width:760px) {
+  .brand { font-size: 18px; }
+  .header-note { font-size: 11px; }
+  .copy-heading { margin-bottom: 22px; }
+  .copy-heading .eyebrow { font-size: 11px; }
+  .hero-copy h1 { font-size: 52px; line-height: 1.2; margin-bottom: 24px; }
+  .hero-copy h1 .title-lead { font-size: .71em; }
+  .hero-copy h1 .title-line { margin-top: 0; }
+  .hero-description { font-size: 13px; line-height: 1.85; margin-bottom: 26px; }
+  .scene-metrics { padding: 20px 0 26px; }
+  .scene-metrics strong { font-size: 22px; }
+  .structural-metrics strong { font-size: 15px; }
+  .scan-monitor { font-size: 11px; width: 148px; }
+  .water-reading>span { font-size: 11px; }
+  .water-reading strong { font-size: 13px; top: 38px; }
+  .component-header>span { font-size: 12px; }
+  .component-header>small { font-size: 11px; }
+  .component-item>i { font-size: 10px; margin-bottom: 6px; }
+  .component-item strong { font-size: 12px; }
+  .component-item small { font-size: 10px; line-height: 1.8; }
+  .asset-readings.component-panel { min-height: 152px; }
+  .climate-reading>span { font-size: 11px; }
+  .climate-reading>strong { font-size: 10px; }
+  .climate-reading small, .climate-reading small span, .climate-reading small b { font-size: 10px; }
+  .climate-reading small { white-space: normal; line-height: 1.8; }
+  .model-buttons button>span { font-size: 13px; }
+  .view-buttons button, #rescan { font-size: 12px; }
+}
+@media (max-width:380px) {
+  .hero-copy h1 { font-size: 48px; }
+  .scene-metrics strong { font-size: 20px; }
+  .structural-metrics strong { font-size: 14px; }
+}

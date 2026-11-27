@@ -1,0 +1,19 @@
+{
+  "name": "pointfield-farm",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 4318 --strictPort",
+    "build": "vite build --base ./",
+    "offline": "npm run build && node make-offline.mjs",
+    "verify": "node verify-farm.mjs && node verify-website.mjs && node verify-operations.mjs && node verify-catalog.mjs"
+  },
+  "dependencies": {
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "vite": "7.3.6",
+    "@playwright/test": "1.58.2"
+  }
+}
